@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 
 const app = express();
 
@@ -16,10 +17,14 @@ mongoose.connect("mongodb://localhost:27017/userDB");
 
 
 // mongoose Schema , 因为用了 mongoose-encrypt，所以需要改 Schema 为 new mongoose.Schema
-const userSchema = ({
+const userSchema = new mongoose.Schema ({
   email: String,
   password: String
 });
+
+// Encrypt Something
+const secret = "Thisisbengilla"; // mongoose-encryption
+userSchema.plugin(encrypt, { secret:secret, encryptedFields: ['password'] });
 
 const User = mongoose.model("User", userSchema); // 这行必须在 secret 下面
 // mongoose End-------------------------------------
